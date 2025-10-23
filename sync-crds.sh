@@ -103,7 +103,7 @@ main() {
   local script_dir
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   local chart_dir="${script_dir}/hivemq-platform-crds"
-  local crds_dir="${chart_dir}/crds"
+  local crds_dir="${chart_dir}/templates/crds"
 
   TMP_DIR="$(mktemp -d)"
   trap 'rm -rf "${TMP_DIR}"' EXIT
