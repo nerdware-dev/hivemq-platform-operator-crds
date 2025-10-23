@@ -4,7 +4,7 @@ This repository packages the HiveMQ Platform Operator CustomResourceDefinitions 
 
 ## Contents
 
-- `hivemq-platform-crds/`: Helm chart; CRDs reside under `templates/crds/`.
+- `hivemq-platform-crds/`: Helm chart; CRDs reside under `templates/crds/` and RBAC templates under `templates/`.
 - `sync-crds.sh`: Helper script that downloads a tagged HiveMQ Platform Operator chart, copies its CRDs into this chart, and updates `Chart.yaml`.
 
 ## Prerequisites
@@ -23,5 +23,5 @@ Replace `0.2.18` with the desired HiveMQ Platform Operator chart version (matchi
 The script will:
 
 1. Download the upstream chart archive for the requested version.
-2. Copy all CRD files into `hivemq-platform-crds/templates/crds/`.
+2. Copy all CRD files into `hivemq-platform-crds/templates/crds/` and RBAC templates (`rbac.yml`, `_helpers-rbac.tpl`) into `hivemq-platform-crds/templates/`.
 3. Update `hivemq-platform-crds/Chart.yaml` to match the chosen version.

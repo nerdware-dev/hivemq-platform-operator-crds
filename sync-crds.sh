@@ -55,6 +55,30 @@ copy_crds() {
   cp "${CRD_FILES[@]}" "${destination_dir}/"
 }
 
+sync_rbac_templates() {
+  local upstream_templates_dir="$1"
+  local destination_dir="$2"
+  local -a rbac_candidates=("_helpers-rbac.tpl" "rbac.yaml" "rbac.yml")
+  local copied=0
+
+  mkdir -p "${destination_dir}"
+
+  for file in "${rbac_candidates[@]}"; do
+    local source_path="${upstream_templates_dir}/${file}"
+    local target_path="${destination_dir}/${file}"
+    rm -f "${target_path}"
+    if [[ -f "${source_path}" ]]; then
+      cp "${source_path}" "${target_path}"
+      copied=1
+    fi
+  done
+
+  if (( copied == 0 )); then
+    echo "No RBAC templates (${rbac_candidates[*]}) found in ${upstream_templates_dir}." >&2
+    exit 1
+  fi
+}
+
 update_chart_metadata() {
   local chart_yaml="$1"
   local version="$2"
@@ -115,9 +139,11 @@ main() {
   local upstream_crds_dir="${TMP_DIR}/helm-charts-${tag}/charts/hivemq-platform-operator/crds"
   discover_crds "${upstream_crds_dir}"
   copy_crds "${crds_dir}"
+  local upstream_templates_dir="${TMP_DIR}/helm-charts-${tag}/charts/hivemq-platform-operator/templates"
+  sync_rbac_templates "${upstream_templates_dir}" "${chart_dir}/templates"
   update_chart_metadata "${chart_dir}/Chart.yaml" "${version}" "${TMP_DIR}"
 
-  echo "Copied CRDs into ${crds_dir} and set chart version to ${version}." >&2
+  echo "Synchronized CRDs and RBAC templates; chart version set to ${version}." >&2
 }
 
 main "$@"
